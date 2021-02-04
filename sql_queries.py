@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS
 user_table_create = ("""
     CREATE TABLE IF NOT EXISTS
     users(
-        user_id text null,
+        user_id integer primary key,
         first_name text null,
         last_name text null,
         gender text null,
@@ -37,7 +37,7 @@ user_table_create = ("""
 song_table_create = ("""
     CREATE TABLE IF NOT EXISTS
     songs(
-        song_id text null,
+        song_id text primary key,
         title text null,
         artist_id text null,
         year smallint null,
@@ -48,7 +48,7 @@ song_table_create = ("""
 artist_table_create = ("""
     CREATE TABLE IF NOT EXISTS
     artists(
-        artist_id text null,
+        artist_id text primary key,
         name text null,
         location text null,
         latitude text null,
@@ -76,15 +76,15 @@ INSERT INTO songplays(start_time,user_id,level,song_id,artist_id,session_id,loca
 """)
 
 user_table_insert = ("""
-INSERT INTO users(user_id,first_name,last_name,gender,level) values(%s, %s, %s, %s, %s)
+INSERT INTO users(user_id,first_name,last_name,gender,level) values(%s, %s, %s, %s, %s) ON CONFLICT (user_id, first_name) DO NOTHING
 """)
 
 song_table_insert = ("""
-INSERT INTO songs(song_id,title,artist_id,year,duration) values(%s, %s, %s, %s, %s)
+INSERT INTO songs(song_id,title,artist_id,year,duration) values(%s, %s, %s, %s, %s) ON CONFLICT (song_id) DO NOTHING
 """)
 
 artist_table_insert = ("""
-INSERT INTO artists(artist_id, name, location, longitude, latitude) values(%s, %s, %s, %s, %s)
+INSERT INTO artists(artist_id, name, location, longitude, latitude) values(%s, %s, %s, %s, %s) on CONFLICT (artist_id) DO NOTHING
 """)
 
 
