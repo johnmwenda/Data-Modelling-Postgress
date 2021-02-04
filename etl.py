@@ -14,10 +14,31 @@ def insert_df_into_table(df, cur, table):
     """
     Bulk insert a dataframe(df) into a table
     """
+
+    # create temp table eg tmp_tab_users
+    temp_table_create_query = """
+    CREATE TEMP TABLE %s 
+    (LIKE %s INCLUDING DEFAULTS)
+    ON COMMIT DROP;
+    """ % ('tmp_tab_'+table, table )
+
+    cur.execute(temp_table_create_query)
+
+    # copy data into temp table (including duplicates if present)
     buffer = StringIO()
     df.to_csv(buffer, mode='w', index=False, header=False)
     buffer.seek(0)
-    cur.copy_from(buffer, table, sep=',')
+    cur.copy_from(buffer, 'tmp_tab_'+table, sep=',')
+
+    # insert into main table excluding duplicates
+    insert_query = """
+    INSERT INTO %s
+    SELECT *
+    FROM %s
+    ON CONFLICT DO NOTHING;
+    """ % (table, 'tmp_tab_'+table)
+    
+    cur.execute(insert_query)
 
 
 def process_song_file(cur, filepath):
