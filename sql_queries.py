@@ -19,7 +19,22 @@ CREATE TABLE IF NOT EXISTS
         artist_id text null,
         session_id integer not null,
         location text null,
-        user_agent text not null
+        user_agent text not null,
+        CONSTRAINT fk_time
+            FOREIGN KEY(start_time)
+                REFRENCES start(start_time),
+        CONSTRAINT fk_users
+            FOREIGN KEY(user_id)
+                REFRENCES users(user_id),
+        CONSTRAINT fk_songs
+            FOREIGN KEY(song_id)
+                REFRENCES songs(song_id),
+        CONSTRAINT fk_songs
+            FOREIGN KEY(song_id)
+                REFRENCES songs(song_id),
+        CONSTRAINT fk_artist
+            FOREIGN KEY(artist_id)
+                REFRENCES artists(artist_id),
     )
 """)
 
